@@ -251,3 +251,10 @@ footer {
         max-width: 1000px;
     }
 }
+
+pre {
+    background-color: #2b2b2b;
+    color: #fdf9f9;
+    padding: 0.5rem;
+    border-radius: 10px;
+}
