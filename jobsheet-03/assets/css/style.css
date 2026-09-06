@@ -200,12 +200,14 @@ footer {
 
 /* ===== Responsive Breakpoints ===== */
 
+
 /* Tablet ke bawah */
 @media (max-width: 768px) {
     main section:nth-of-type(2) {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
 
 /* Mobile */
 @media (max-width: 480px) {
@@ -240,5 +242,12 @@ footer {
     form input,
     form select {
         max-width: 100%;
+    }
+}
+
+/* Tambahan untuk Layar Sangat Lebar */
+@media (min-width: 1400px) {
+    main {
+        max-width: 1000px;
     }
 }
