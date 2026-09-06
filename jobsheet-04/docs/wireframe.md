@@ -125,3 +125,11 @@ Halaman yang sudah ada (Beranda, Daftar/Tambah Buku, Daftar/Tambah Anggota — J
 +-------------------------------------------------+
 | (c) 2026 SIMPUS-Mini                            |
 +-------------------------------------------------+
+
+## User Flow — Pengecekan Tunggakan
+
+[Petugas Login] -> [Dashboard] -> [Pilih Menu "Daftar Tunggakan"]
+        -> [Sistem menampilkan daftar anggota lewat jatuh tempo]
+        -> [Pilih Anggota] -> [Klik "Kirim Peringatan"]
+        -> [Sistem mengarahkan ke WhatsApp/SMS otomatis] -> [Selesai]
+
