@@ -133,3 +133,12 @@ Halaman yang sudah ada (Beranda, Daftar/Tambah Buku, Daftar/Tambah Anggota — J
         -> [Pilih Anggota] -> [Klik "Kirim Peringatan"]
         -> [Sistem mengarahkan ke WhatsApp/SMS otomatis] -> [Selesai]
 
+## Identifikasi Edge Case Tambahan
+
+1. Peminjaman Ganda (Double Borrowing):
+   - Skenario: Petugas tidak sengaja mengklik tombol simpan dua kali, atau mencoba meminjamkan judul buku yang sama persis ke anggota yang sama di waktu yang bersamaan.
+   - Penanganan: Sistem harus memblokir aksi ini atau memunculkan peringatan "Buku ini sudah dipinjam oleh anggota tersebut dan belum dikembalikan" untuk mencegah duplikasi data.
+
+2. Spam Klik Form (Multiple Submits):
+   - Skenario: Pengguna mengklik tombol "Simpan" atau "Daftar" berkali-kali sebelum halaman selesai memproses data (loading lambat).
+   - Penanganan: Tombol "Simpan" harus otomatis dinonaktifkan (disabled) tepat setelah klik pertama kali dilakukan.
