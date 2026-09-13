@@ -150,7 +150,7 @@ async function muatDataGenerik(urlJSON, containerBody, containerLoading, keys) {
     tbody.innerHTML = "";
 
     try {
-        await new Promise((resolve) => setTimeout(resolve, 600));
+        await new Promise((resolve) => setTimeout(resolve, 3000));
 
         const res = await fetch(urlJSON);
         if (!res.ok) throw new Error("Gagal mengambil data");
@@ -159,7 +159,6 @@ async function muatDataGenerik(urlJSON, containerBody, containerLoading, keys) {
         data.forEach(item => {
             const tr = document.createElement("tr");
             let isiBaris = "";
-            
             
             keys.forEach(key => {
                 isiBaris += "<td>" + (item[key] !== undefined ? item[key] : "-") + "</td>";
