@@ -135,3 +135,41 @@ document.addEventListener("DOMContentLoaded", function () {
     initTableFilter();
     initValidasiForm();
 });
+
+async function muatDataGenerik(urlJSON, containerBody, containerLoading, keys) {
+    const tbody = document.querySelector(containerBody);
+    const loading = document.getElementById(containerLoading);
+    if (!tbody) return;
+
+    if (loading) loading.style.display = "block";
+    tbody.innerHTML = "";
+
+    try {
+        await new Promise((resolve) => setTimeout(resolve, 600));
+
+        const res = await fetch(urlJSON);
+        if (!res.ok) throw new Error("Gagal mengambil data");
+        const data = await res.json();
+
+        data.forEach(item => {
+            const tr = document.createElement("tr");
+            let isiBaris = "";
+            
+            
+            keys.forEach(key => {
+                isiBaris += "<td>" + (item[key] !== undefined ? item[key] : "-") + "</td>";
+            });
+            
+            isiBaris += "<td>" +
+                        "<button type=\"button\">Edit</button> " +
+                        "<button type=\"button\" class=\"btn-hapus\">Hapus</button>" +
+                        "</td>";
+            tr.innerHTML = isiBaris;
+            tbody.appendChild(tr);
+        });
+    } catch (err) {
+        tbody.innerHTML = "<tr><td colspan=\"" + (keys.length + 1) + "\">Gagal: " + err.message + "</td></tr>";
+    } finally {
+        if (loading) loading.style.display = "none";
+    }
+}
