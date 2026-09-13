@@ -3,7 +3,7 @@ function muatDaftarBuku() {
         "../data/buku.json", 
         ".table-responsive table tbody", 
         "loading-indicator", 
-        ["judul", "pengarang", "tahun", "stok"] 
+        ["judul", "pengarang", "tahun", "stok", "kategori"] 
     );
 }
 
