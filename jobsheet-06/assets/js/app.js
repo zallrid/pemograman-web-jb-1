@@ -1,4 +1,4 @@
-// ===== Hamburger menu (JS-driven, menggantikan checkbox hack) =====
+// ===== Hamburger menu =====
 function initNavToggle() {
     const toggleBtn = document.getElementById("nav-toggle-btn");
     const nav = document.querySelector("header nav");
@@ -9,41 +9,57 @@ function initNavToggle() {
     });
 }
 
-// ===== Konfirmasi hapus (front-end only, belum ke server) =====
-// Memakai event delegation di document karena baris tabel sekarang
-// dirender dinamis via fetch (lihat buku.js/anggota.js) sehingga
-// tombol .btn-hapus belum tentu ada saat DOMContentLoaded.
-function initHapusConfirm() {
-    document.addEventListener("click", function (e) {
-        const btn = e.target.closest(".btn-hapus");
-        if (!btn) return;
+function updateCounter() {
+    const table = document.querySelector(".table-responsive table");
+    const counterText = document.getElementById("table-counter");
+    if (!table || !counterText) return;
 
-        const row = btn.closest("tr");
-        const nama = row ? row.querySelector("td")?.textContent : "data ini";
-        const yakin = confirm("Yakin ingin menghapus \"" + nama + "\"?");
-        if (yakin && row) {
-            row.remove();
-        }
+    const rows = table.querySelectorAll("tbody tr");
+    let visibleCount = 0;
+    
+    rows.forEach(row => {
+        if (row.style.display !== "none") visibleCount++;
+    });
+    
+    counterText.textContent = `Menampilkan ${visibleCount} dari ${rows.length} data`;
+}
+
+function initHapusConfirm() {
+    document.querySelectorAll(".btn-hapus").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            const row = btn.closest("tr");
+            const nama = row ? row.querySelector("td")?.textContent : "data ini";
+            const yakin = confirm("Yakin ingin menghapus \"" + nama + "\"?");
+            
+            if (yakin && row) {
+                row.remove();
+                updateCounter(); 
+            }
+        });
     });
 }
 
-// ===== Filter/pencarian tabel real-time =====
 function initTableFilter() {
     const input = document.getElementById("search-input");
     const table = document.querySelector(".table-responsive table");
     if (!input || !table) return;
 
+    updateCounter(); 
+
     input.addEventListener("keyup", function () {
         const keyword = input.value.toLowerCase();
         const rows = table.querySelectorAll("tbody tr");
+        
         rows.forEach(function (row) {
-            const teks = row.textContent.toLowerCase();
-            row.style.display = teks.includes(keyword) ? "" : "none";
+            const selTeks = row.querySelector("td") ? row.querySelector("td").textContent.toLowerCase() : "";
+            row.style.display = selTeks.includes(keyword) ? "" : "none";
         });
+        
+        updateCounter(); 
     });
 }
 
-// ===== Validasi form (client-side) =====
+// ===== Fungsi Bantuan Validasi =====
 function tampilkanError(input, pesan) {
     hapusError(input);
     const span = document.createElement("span");
@@ -66,43 +82,46 @@ function initValidasiForm() {
     form.addEventListener("submit", function (e) {
         let valid = true;
 
-        const judul = form.querySelector("[name='judul'], [name='nama']");
-        if (judul && judul.value.trim() === "") {
-            tampilkanError(judul, "Field ini wajib diisi.");
-            valid = false;
-        } else if (judul) {
-            hapusError(judul);
-        }
+        const aturanValidasi = [
+            { name: 'judul', error: 'Judul wajib diisi.' },
+            { name: 'nama', error: 'Nama wajib diisi.' },
+            { name: 'pengarang', error: 'Pengarang wajib diisi.' },
+            { name: 'no_anggota', error: 'Nomor Anggota wajib diisi.' },
+            { name: 'tahun', type: 'number', min: 1900, max: 2026, error: 'Tahun harus 1900-2026.' },
+            { name: 'stok', type: 'number', min: 0, error: 'Stok tidak boleh negatif.' },
+            { name: 'isbn', type: 'regex', pattern: /^[0-9-]+$/, error: 'ISBN hanya boleh angka dan tanda hubung (-).' }
+        ];
 
-        const pengarang = form.querySelector("[name='pengarang']");
-        if (pengarang && pengarang.value.trim() === "") {
-            tampilkanError(pengarang, "Pengarang wajib diisi.");
-            valid = false;
-        } else if (pengarang) {
-            hapusError(pengarang);
-        }
+        // Looping semua field form
+        aturanValidasi.forEach(function(aturan) {
+            const input = form.querySelector(`[name='${aturan.name}']`);
+            if (!input) return; 
 
-        const tahun = form.querySelector("[name='tahun']");
-        if (tahun) {
-            const nilai = parseInt(tahun.value, 10);
-            if (isNaN(nilai) || nilai < 1900 || nilai > 2026) {
-                tampilkanError(tahun, "Tahun harus di antara 1900-2026.");
+            let isValid = true;
+            const nilai = input.value.trim();
+
+            if (input.hasAttribute('required') && nilai === "") {
+                isValid = false;
+            } else if (nilai !== "") {
+                if (aturan.type === 'number') {
+                    const num = parseInt(nilai, 10);
+                    if (isNaN(num) || (aturan.min !== undefined && num < aturan.min) || (aturan.max !== undefined && num > aturan.max)) {
+                        isValid = false;
+                    }
+                } else if (aturan.type === 'regex') {
+                    if (!aturan.pattern.test(nilai)) {
+                        isValid = false;
+                    }
+                }
+            }
+
+            if (!isValid) {
+                tampilkanError(input, aturan.error);
                 valid = false;
             } else {
-                hapusError(tahun);
+                hapusError(input);
             }
-        }
-
-        const stok = form.querySelector("[name='stok']");
-        if (stok) {
-            const nilai = parseInt(stok.value, 10);
-            if (isNaN(nilai) || nilai < 0) {
-                tampilkanError(stok, "Stok tidak boleh negatif.");
-                valid = false;
-            } else {
-                hapusError(stok);
-            }
-        }
+        });
 
         if (!valid) {
             e.preventDefault();
