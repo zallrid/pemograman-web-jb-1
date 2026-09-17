@@ -11,7 +11,7 @@ $totalAnggota = count($_SESSION['anggota'] ?? []);
         </section>
 
         <section>
-            <h2>Ringkasan</h2>
+            <h2>Ringkasan</h2> 
             <article>
                 <h3>Total Buku</h3>
                 <p><?php echo $totalBuku; ?></p>
@@ -24,5 +24,10 @@ $totalAnggota = count($_SESSION['anggota'] ?? []);
                 <h3>Sedang Dipinjam</h3>
                 <p>0</p>
             </article>
+        </section>
+        <section style="text-align: center;">
+            <p>Butuh menghapus semua data untuk testing?</p>
+            <br>
+            <a href="proses_reset.php" style="background-color: #d9534f; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;">Reset Seluruh Data (Session Destroy)</a>
         </section>
 <?php include __DIR__ . '/includes/footer.php'; ?>
