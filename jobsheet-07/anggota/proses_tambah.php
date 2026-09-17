@@ -14,6 +14,12 @@ if ($noAnggota === '') {
     $errors[] = "No. Anggota wajib diisi.";
 }
 
+if ($noHp !== '') {
+    if (!preg_match('/^[0-9]+$/', $noHp)) {
+        $errors[] = "No. HP hanya boleh berisi angka.";
+    }
+}
+
 if (!empty($errors)) {
     $_SESSION['flash'] = ['type' => 'error', 'pesan' => implode(' ', $errors)];
     header('Location: tambah.php');
