@@ -26,13 +26,19 @@ $stmt = $pdo->prepare(
      VALUES (:nama, :no_anggota, :alamat, :no_hp)
      RETURNING id"
 );
-$stmt->execute([
-    'nama' => $nama,
-    'no_anggota' => $noAnggota,
-    'alamat' => $alamat,
-    'no_hp' => $noHp,
-]);
 
-$_SESSION['flash'] = ['type' => 'success', 'pesan' => 'Anggota berhasil ditambahkan.'];
-header('Location: list.php');
-exit;
+try {
+    $stmt->execute([
+        'nama' => $nama,
+        'no_anggota' => $noAnggota,
+        'alamat' => $alamat,
+        'no_hp' => $noHp,
+    ]);
+} catch (PDOException $e) {
+    if ($e->getCode() == '23505') {
+        $_SESSION['flash'] = ['type' => 'error', 'pesan' => 'No. Anggota sudah dipakai, gunakan nomor lain.'];
+        header('Location: tambah.php');
+        exit;
+    }
+    throw $e;
+}
