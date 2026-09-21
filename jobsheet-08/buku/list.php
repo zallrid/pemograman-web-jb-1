@@ -27,6 +27,7 @@ $daftarBuku = $pdo->query("SELECT * FROM buku ORDER BY id DESC")->fetchAll(PDO::
                         <th>Judul</th>
                         <th>Pengarang</th>
                         <th>Tahun</th>
+                        <th>Tanggal Masuk</th>
                         <th>Stok</th>
                         <th>Aksi</th>
                     </tr>
@@ -43,6 +44,7 @@ $daftarBuku = $pdo->query("SELECT * FROM buku ORDER BY id DESC")->fetchAll(PDO::
                             <td><?php echo $buku['pengarang']; ?></td>
                             <td><?php echo $buku['tahun']; ?></td>
                             <td><?php echo $buku['stok']; ?></td>
+                            <td><?php echo $buku['tanggal_ditambahkan']; ?></td>
                             <td>
                                 <button type="button">Edit</button>
                                 <button type="button" class="btn-hapus">Hapus</button>
