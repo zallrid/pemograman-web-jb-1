@@ -111,9 +111,22 @@ function initValidasiForm() {
     });
 }
 
+function initEditConfirm() {
+    const formEdit = document.getElementById("form-edit");
+    if (!formEdit) return;
+
+    formEdit.addEventListener("submit", function (e) {
+        const yakin = confirm("Yakin ingin menyimpan perubahan data ini?");
+        if (!yakin) {
+            e.preventDefault(); 
+        }
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     initNavToggle();
     initHapusConfirm();
     initTableFilter();
     initValidasiForm();
+    initEditConfirm();
 });
