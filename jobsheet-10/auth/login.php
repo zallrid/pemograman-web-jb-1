@@ -21,22 +21,23 @@ unset($_SESSION['flash']);
             <?php endif; ?>
 
             <form method="post" action="proses_login.php">
-                <p>
-                    <label for="username">Username</label><br>
-                    <input type="text" id="username" name="username" required>
-                </p>
-                <p>
-                    <label for="password">Password</label><br>
-                    <input type="password" id="password" name="password" required>
-                </p>
-                <div class="checkbox-container">
-                    <input type="checkbox" name="remember" id="remember">
-                    <label for="remember">Ingat Saya</label>
-                </div>
-                <p>
-                    <button type="submit">Masuk</button>
-                </p>
-            </form>
+    <p>
+        <label for="username">Username</label><br>
+        <input type="text" id="username" name="username" required>
+    </p>
+    <p>
+        <label for="password">Password</label><br>
+        <input type="password" id="password" name="password" required>
+    </p>
+    <p>
+        <label>
+            <input type="checkbox" name="remember" value="1"> Ingat Saya
+        </label>
+    </p>
+    <p>
+        <button type="submit">Masuk</button>
+    </p>
+</form>
             <p>Belum punya akun? <a href="register.php">Daftar di sini</a></p>
         </section>
 <?php include __DIR__ . '/../includes/footer.php'; ?>
