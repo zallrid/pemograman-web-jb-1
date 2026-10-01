@@ -6,6 +6,7 @@ require __DIR__ . '/../includes/koneksi.php';
 
 $username = trim($_POST['username'] ?? '');
 $password = $_POST['password'] ?? '';
+$remember = $_POST['remember'] ?? null; 
 
 $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");
 $stmt->execute(['username' => $username]);
@@ -15,6 +16,13 @@ if ($user && password_verify($password, $user['password'])) {
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['nama'] = $user['nama'];
     $_SESSION['role'] = $user['role'];
+    
+    
+    if ($remember) {
+       
+        setcookie('user_login', $username, time() + (86400 * 7), "/");
+    }
+
     header('Location: ../index.php');
     exit;
 }
