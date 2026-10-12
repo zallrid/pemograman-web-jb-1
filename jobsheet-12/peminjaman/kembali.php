@@ -9,17 +9,21 @@ unset($_SESSION['flash']);
 
 $keyword = trim($_GET['q'] ?? '');
 
-$sqlDasar = "SELECT p.id, b.judul, a.nama, p.tanggal_pinjam
-             FROM peminjaman p
-             JOIN buku b ON b.id = p.buku_id
-             JOIN anggota a ON a.id = p.anggota_id
-             WHERE p.status = 'dipinjam'";
+
+$sqlBase = "
+    SELECT p.*, b.judul, a.nama, a.no_hp,
+           (p.tanggal_pinjam + INTERVAL '14 days')::DATE AS tanggal_jatuh_tempo
+    FROM peminjaman p
+    JOIN buku b ON p.buku_id = b.id
+    JOIN anggota a ON p.anggota_id = a.id
+    WHERE p.status = 'dipinjam'
+";
 
 if ($keyword !== '') {
-    $stmt = $pdo->prepare($sqlDasar . " AND (b.judul ILIKE :kw OR a.nama ILIKE :kw) ORDER BY p.tanggal_pinjam");
+    $stmt = $pdo->prepare($sqlBase . " AND (b.judul ILIKE :kw OR a.nama ILIKE :kw) ORDER BY p.tanggal_pinjam DESC");
     $stmt->execute(['kw' => '%' . $keyword . '%']);
 } else {
-    $stmt = $pdo->query($sqlDasar . " ORDER BY p.tanggal_pinjam");
+    $stmt = $pdo->query($sqlBase . " ORDER BY p.tanggal_pinjam DESC");
 }
 $daftarAktif = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -46,21 +50,25 @@ $daftarAktif = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <tr>
                         <th>Anggota</th>
                         <th>Buku</th>
+                        <th>No. HP</th>
                         <th>Tgl Pinjam</th>
+                        <th>Jatuh Tempo</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($daftarAktif)): ?>
                     <tr>
-                        <td colspan="4">Tidak ada peminjaman aktif.</td>
+                        <td colspan="6">Tidak ada peminjaman aktif.</td>
                     </tr>
                     <?php else: ?>
                         <?php foreach ($daftarAktif as $trx): ?>
                         <tr>
                             <td><?php echo e($trx['nama']); ?></td>
                             <td><?php echo e($trx['judul']); ?></td>
-                            <td><?php echo $trx['tanggal_pinjam']; ?></td>
+                            <td><?php echo e($trx['no_hp']); ?></td>
+                            <td><?php echo e($trx['tanggal_pinjam']); ?></td>
+                            <td><?php echo e($trx['tanggal_jatuh_tempo']); ?></td>
                             <td>
                                 <form method="post" action="proses_kembali.php">
                                     <?php echo csrf_field(); ?>
